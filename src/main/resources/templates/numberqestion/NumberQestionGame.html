@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>数当てゲーム</title>
+    </head>
+    <body>
+        <!-- ゲームのタイトルと説明 -->
+        <h1>数当てゲーム</h1>
+        <p>1~20の数字を当ててください</p>
+
+        <!-- ヒントメッセージの表示領域（青色テキスト） -->
+        <p th:if="${result}" th:text="${result}" style="color:blue;">ヒント文が入る</p>
+
+        <!-- 回答フォーム（未正解時のみ表示） -->
+        <form th:if="${isFinished == null || isFinished == false}" th:action="@{/numberqestion/gameplay}" method="post">
+            <!-- 
+                数値入力フィールド
+                - 1から20までの数値のみ許可
+                - 必須入力
+                - 20以上の数値は20に制限
+                - 負の数値は正の数に変換
+            -->
+            <input type="number" 
+                   name="guess" 
+                   required 
+                   min="1" 
+                   max="20"
+                   oninput="this.value = this.value > 20 ? 20 : Math.abs(this.value)">
+            <input type="submit" value="回答">
+        </form>
+        <div th:if="${isFinished == null || isFinished == false}">
+            <!-- ゲーム一覧への戻りリンク -->
+            <a th:href="@{/numberqestion}">プレイ一覧へ</a>
+        </div>
+
+        <!-- 正解時の表示領域 -->
+        <form th:if="${isFinished}" th:action="@{/numberqestion/save}" method="post" th:object="${numberQestionForm}">
+            <p>クリアです！おめでとうございます！</p>
+            <p>プレイヤー名を入力してください</p>
+
+            <input type="text" th:field="*{playName}" required>
+            <input type="submit" value="保存">
+            <span th:if="${#fields.hasErrors('playName')}" th:errors="*{playName}" style="color:red;">
+                プレイヤー名は1文字以上8文字以内で入力してください
+            </span>
+        </form>
+         
+        <!-- 試行回数の表示 -->
+        <p th:if="${attempts}" th:text="'試行回数: ' + ${attempts}"></p>
+    </body>
+</html>

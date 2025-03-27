@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>プレイ履歴一覧</title>
+    </head>
+    <body>
+        <h1>プレイ履歴</h1>
+        <!-- Flashメッセージ -->
+         <p th:if="${message}" th:text="${message}" style="color:blue;">
+            完了メッセージ
+         </p>
+        <table border="1" width="550">
+            <tr>
+                <th>ID</th>
+                <th>プレイ日時</th>
+                <th>プレイヤー名</th>
+                <th>回答数</th>
+                <th>操作</th>
+            </tr>
+            <tr th:each="q : ${qestions}">
+                <td th:text="${q.id}"></td>
+                <td th:text="${q.playDate}"></td>
+                <td th:text="${q.playName}"></td>
+                <td th:text="${q.clearCount}"></td>
+                <td>
+                    <form th:action="@{/numberqestion/delete/{id}(id=${q.id})}" method="post">
+                        <button type="submit">削除</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+
+        <br>
+        <form th:action="@{/numberqestion/gameplay}" method="get">
+            <input type="submit" value="新規プレイ">
+        </form>
+
+    </body>
+</html>
